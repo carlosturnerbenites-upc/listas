@@ -10,5 +10,3 @@ function Node(data){
 	this.sig = data.info.sig
 	this.ant = data.info.ant
 }
-
-module.exports = Node

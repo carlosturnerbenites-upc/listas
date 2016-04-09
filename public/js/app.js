@@ -1,5 +1,8 @@
 //Listas Dobles
 
+/* Instanciar un objeto de la clase lista*/
+var list = new List()
+
 function managerList(){
 	/* Template String ge impresion de nodos*/
 	var template = 'identificacion \t ::id:: \n nombre: \t ::nomb::  \n apellido:  \t ::apelli::  \n nota1: \t ::not1:: \n nota2: \t ::not2:: \n nota3: \t ::not3:: \n nota final: \t ::notfinal::',
@@ -30,9 +33,9 @@ function managerList(){
 		var identificacion = parseInt(prompt('Digite el numero de identificacion : ')),
 			nombre =  prompt('Digite el nombre de la persona : '),
 			apellido = prompt('Digite el apellido' ),
-			nota1 = parseFloat(prompt('Digite la nota #1 : ')),
-			nota2 = parseFloat(prompt('Digite la nota #2 : ')),
-			nota3 = parseFloat(prompt('Digite la nota #3 : ')),
+			nota1 = prompt('Digite la nota #1 : '),
+			nota2 = prompt('Digite la nota #2 : '),
+			nota3 = prompt('Digite la nota #3 : '),
 			notadefinitiva = (nota1 + nota2 + nota3) / 3
 
 		/* definir en en que posicion se insertara el nuevo nodo*/
@@ -42,15 +45,7 @@ function managerList(){
 		if (opcion == 4) point = parseInt(prompt('Posicion: '))
 
 		/* Enviar peticion al servidor*/
-		ajax({
-			URL: '/add',
-			type: 'POST',
-			contentType : 'application/json',
-			onSuccess: response => {
-				if (response.err) return alert(response.err.msg)
-				renderResult(response.new)
-			},
-			data: {
+		var result = list.insert({
 				point: point,
 				info: {
 					identificacion: identificacion,
@@ -61,25 +56,19 @@ function managerList(){
 					nota3: nota3,
 					notadefinitiva: notadefinitiva
 				}
-			}
-		})
+			})
+		console.log(result)
 	}
 
 	/* Mostrar la lista*/
 	this.showList = function(){
 		/* Enviar peticion al servidor*/
-		ajax({
-			URL: '/show-list',
-			type: 'GET',
-			onSuccess: response => {
-				var head = response
-				while(head != null){
-					renderResult(head)
-					head = head.sig
-				}
-			},
-			data: null
-		})
+		var headList = list.showList()
+		var head = headList
+		while(head != null){
+			renderResult(head)
+			head = head.sig
+		}
 	}
 
 	/* Buscar nodos*/
@@ -97,17 +86,10 @@ function managerList(){
 			value: prompt('Valor buscado')
 		}
 
-		/* Enviar peticion al servidor*/
-		ajax({
-			URL: '/find',
-			type: 'POST',
-			contentType : 'application/json',
-			onSuccess: response => {
-				if (response.err) return alert(response.err.msg)
-				for (var element of response.elements){renderResult(element.current)}
-			},
-			data: data
-		})
+		var result = list.find(data)
+		if (result.err) return alert(result.err.msg)
+		for (var element of result.elements){renderResult(element.current)}
+
 	}
 
 	/* Editar nodos*/
@@ -128,16 +110,10 @@ function managerList(){
 		}
 
 		/* Enviar peticion al servidor*/
-		ajax({
-			URL: '/update',
-			type: 'PUT',
-			contentType : 'application/json',
-			onSuccess: response => {
-				if (response.err) return alert(response.err.msg)
-				for (var element of response.elements){renderResult(element.current)}
-			},
-			data: data
-		})
+		var result = list.edit(data)
+		if (result.err) return alert(result.err.msg)
+		for (var element of result.elements){renderResult(element.current)}
+
 	}
 
 	/* Borrar nodos*/
@@ -154,17 +130,9 @@ function managerList(){
 			value: prompt('Valor buscado')
 		}
 
-		/* Enviar peticion al servidor*/
-		ajax({
-			URL: '/delete',
-			type: 'DELETE',
-			contentType : 'application/json',
-			onSuccess: response => {
-				if (response.err) return alert(response.err.msg)
-				for (var element of response.elements){renderResult(element.current)}
-			},
-			data: data
-		})
+		var result = list.delete(data)
+		if (result.err) return alert(result.err.msg)
+		for (var element of result.elements){renderResult(element.current)}
 	}
 }
 

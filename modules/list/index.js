@@ -20,7 +20,7 @@ router.get('/keys', (req, res) => res.json({keys :Object.getOwnPropertyNames(new
 router.post('/add', (req, res) => {
 	var result = list.insert(req.body)
 	console.log("-------------")
-	console.log(result.list)
+	console.log(result)
 	console.log("-------------")
 	res.json(result)
 })
@@ -42,7 +42,5 @@ router.put('/update', (req, res) => {
 	var result = list.edit(req.body)
 	res.json(result)
 })
-
-
 
 module.exports = router

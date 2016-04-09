@@ -11,6 +11,8 @@
   "author": "carlos turner benites",
   "license": "ISC",
   "devDependencies": {
-    "body-parser": "^1.15.0"
+    "body-parser": "^1.15.0",
+    "express": "^4.13.4",
+    "jade": "^1.11.0"
   }
 }

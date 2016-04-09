@@ -1,7 +1,5 @@
-/* Importar la clase Nodo - nodo */
-const Node = require('./node')
+/*cambiar la referencia de ant al borrar un objeto*/
 
-/* Definicion de la clase List - manejo de nodos*/
 function List(){
 
 	/*variables globales*/
@@ -65,6 +63,7 @@ function List(){
 			nuevo = null
 
 		data.info.sig = null
+		data.info.ant = null
 
 		if(empty()){
 			nuevo = new Node(data)
@@ -82,6 +81,7 @@ function List(){
 					if(aux.sig == null){
 						nuevo = new Node(data)
 						aux.sig = nuevo
+						nuevo.ant = aux
 						break
 					}
 					aux = aux.sig
@@ -95,19 +95,36 @@ function List(){
 				})
 
 				/* Preguntar si no hubieron resultados - Retornar mensaje*/
-				if (result.notFound) return ({err: {msg: 'No se encontraron objetos con ' + data.attr + ' = ' + data.value}})
-
-				var elements = result.elements
-				elements.sort((a,b) => {return(a.name > b.name)})
-				var element = elements[0]
-				nuevo = new Node(data)
-				if (element.current == primero) {
-					nuevo.sig = primero
-					primero = nuevo
+				if (result.notFound){
+					var aux = primero
+					while (aux != null){
+						if(aux.sig == null){
+							nuevo = new Node(data)
+							aux.sig = nuevo
+							nuevo.ant = aux
+							break
+						}
+						aux = aux.sig
+					}
 				}else{
-					element.prev.sig = nuevo
-					nuevo.sig = element.current
+
+					var elements = result.elements
+					elements.sort((a,b) => {return(a.name > b.name)})
+					var element = elements[0]
+					nuevo = new Node(data)
+					console.log(elements)
+					if (element.current == primero) {
+						nuevo.sig = primero
+						primero.ant = nuevo
+						primero = nuevo
+					}else{
+						element.prev.sig = nuevo
+						nuevo.ant = element.prev
+						nuevo.sig = element.current
+						element.current.ant = nuevo
+					}
 				}
+
 
 			}else if(typeof point == 'number'){
 				var aux = primero,
@@ -119,6 +136,7 @@ function List(){
 						nuevo = new Node(data)
 						if (aux == primero) {
 							nuevo.sig = primero
+							primero.ant = nuevo
 							primero = nuevo
 						}else{
 							nuevo.sig = aux.sig
@@ -139,7 +157,7 @@ function List(){
 
 	/* Mostrar la lista*/
 	/* Retorna el primero nodo de la lista*/
-	this.showList = function() {return primero}
+	this.showList = function() {console.info(primero);return primero}
 
 	/* Buscar nodos*/
 	this.find = function(data){
@@ -240,11 +258,13 @@ function List(){
 			if (element.current == primero){
 				/*Reasigna las referencia de los nodos*/
 				primero = primero.sig
+				primero.ant = null
 			}else{
 				/*Borrar el id del nodo del Array de ids existentes*/
 				idsExists = idsExists.filter(e => {return (e != element.current.id)})
 
 				/*Reasigna las referencia de los nodos*/
+				element.current.sig.ant = elements.prev
 				element.prev.sig = element.current.sig
 			}
 		}
@@ -252,5 +272,3 @@ function List(){
 		return ({elements: elements})
 	}
 }
-
-module.exports = List
