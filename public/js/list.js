@@ -264,7 +264,7 @@ function List(){
 				idsExists = idsExists.filter(e => {return (e != element.current.id)})
 
 				/*Reasigna las referencia de los nodos*/
-				element.current.sig.ant = elements.prev
+				element.current.sig.ant = element.prev
 				element.prev.sig = element.current.sig
 			}
 		}
