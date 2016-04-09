@@ -57,7 +57,7 @@ function managerList(){
 					notadefinitiva: notadefinitiva
 				}
 			})
-		console.log(result)
+		renderResult(result)
 	}
 
 	/* Mostrar la lista*/
@@ -88,7 +88,7 @@ function managerList(){
 
 		var result = list.find(data)
 		if (result.err) return alert(result.err.msg)
-		for (var element of result.elements){renderResult(element.current)}
+		for (var element of result.elements){renderResult(element)}
 
 	}
 
@@ -112,7 +112,7 @@ function managerList(){
 		/* Enviar peticion al servidor*/
 		var result = list.edit(data)
 		if (result.err) return alert(result.err.msg)
-		for (var element of result.elements){renderResult(element.current)}
+		for (var element of result.elements){renderResult(element)}
 
 	}
 
@@ -132,33 +132,9 @@ function managerList(){
 
 		var result = list.delete(data)
 		if (result.err) return alert(result.err.msg)
-		for (var element of result.elements){renderResult(element.current)}
+		for (var element of result.elements){renderResult(element)}
 	}
 }
 
 /* Instanciar un objeto de managerList */
 var app = new managerList()
-
-/* Abstraccion de una peticion*/
-function ajax (config){
-	var xhr = new XMLHttpRequest(),
-		responseJSON = config | true,
-		data = config.data instanceof Object ? JSON.stringify(config.data) : config.data
-
-	xhr.open(config.type, config.URL, config.async)
-	xhr.setRequestHeader('Content-Type', config.contentType)
-
-	xhr.send(data)
-
-	if(config.async){
-		xhr.onreadystatechange = function () {
-			if (this.readyState == 4 && this.status == 200) {
-				var response = responseJSON ? JSON.parse(this.responseText) : this.responseText
-				config.onSuccess(response)
-			}
-		}
-	}else{
-		var response = responseJSON ? JSON.parse(xhr.responseText) : xhr.responseText
-		config.onSuccess(response)
-	}
-}

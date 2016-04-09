@@ -113,15 +113,15 @@ function List(){
 					var element = elements[0]
 					nuevo = new Node(data)
 					console.log(elements)
-					if (element.current == primero) {
+					if (element == primero) {
 						nuevo.sig = primero
 						primero.ant = nuevo
 						primero = nuevo
 					}else{
-						element.prev.sig = nuevo
-						nuevo.ant = element.prev
-						nuevo.sig = element.current
-						element.current.ant = nuevo
+						element.ant.sig = nuevo
+						nuevo.ant = element.ant
+						nuevo.sig = element
+						element.ant = nuevo
 					}
 				}
 
@@ -152,7 +152,7 @@ function List(){
 		}
 		idsExists.push(identificacion)
 
-		return ({new: nuevo})
+		return (nuevo)
 	}
 
 	/* Mostrar la lista*/
@@ -163,7 +163,6 @@ function List(){
 	this.find = function(data){
 		/* Definicion de nodos auxiliares*/
 		var aux = primero,
-			prev = aux,
 			/*boolean usado para saber si se encontraron nodos*/
 			found = false
 
@@ -191,13 +190,12 @@ function List(){
 					/* Agregar el nodo concurrente al array*/
 					/*
 						current : nodo concurrente
-						prev : nodo anterios
 					*/
-					elements.push({current: aux, prev : prev})
+					elements.push(aux)
 				}
 
 				/* Reasignacion de nodos auxiliares */
-				prev = aux
+
 				aux = aux.sig
 			}
 			if(found){
@@ -231,7 +229,7 @@ function List(){
 			}
 
 			/* Actualizar le valor del nodo en el attributo indicado*/
-			element.current[data.attr] = data.newValue
+			element[data.attr] = data.newValue
 
 			/*Agregar id al Array de ids existentes*/
 			if (data.attr == 'id') idsExists.push(parseInt(data.value))
@@ -255,17 +253,17 @@ function List(){
 		/* Recorre los nodos encontrado*/
 		for (var element of elements){
 
-			if (element.current == primero){
+			if (element == primero){
 				/*Reasigna las referencia de los nodos*/
 				primero = primero.sig
 				primero.ant = null
 			}else{
 				/*Borrar el id del nodo del Array de ids existentes*/
-				idsExists = idsExists.filter(e => {return (e != element.current.id)})
+				idsExists = idsExists.filter(e => {return (e != element.id)})
 
 				/*Reasigna las referencia de los nodos*/
-				element.current.sig.ant = element.prev
-				element.prev.sig = element.current.sig
+				element.sig.ant = element.ant
+				element.ant.sig = element.sig
 			}
 		}
 		/* Retornar los elementos borrados y la lista completa*/
