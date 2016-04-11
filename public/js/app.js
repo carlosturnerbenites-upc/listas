@@ -57,6 +57,7 @@ function managerList(){
 					notadefinitiva: notadefinitiva
 				}
 			})
+		if(result.err) return alert(result.err.msg)
 		renderResult(result)
 	}
 
@@ -64,6 +65,9 @@ function managerList(){
 	this.showList = function(){
 		/* Enviar peticion al servidor*/
 		var headList = list.showList()
+
+		if(!headList) return alert("Lista Vacia")
+
 		var head = headList
 		while(head != null){
 			renderResult(head)

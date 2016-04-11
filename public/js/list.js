@@ -6,9 +6,6 @@ function List(){
 	var primero = null,
 		aux = null,
 
-		/* Array de ids existentes*/
-		idsExists = [],
-
 		/* Verificacion de Lista vacio*/
 		empty = function(){
 			if(primero == null) return true
@@ -17,7 +14,16 @@ function List(){
 
 		/* Verificacion de existencia de X nodo*/
 		exists = function(dato){
-			var exists = (idsExists.indexOf(dato) == -1) ? false : true
+			var exists = false,
+				aux = primero
+			while (aux != null){
+				if(aux.id == dato){
+					exists = true
+					break
+				}
+				aux = aux.sig
+			}
+			console.log("exists " + exists)
 			return exists
 		},
 
@@ -55,8 +61,6 @@ function List(){
 			}
 			return count
 		}
-
-		this.ids = function() {return idsExists}
 
 	/* Insertar nodos*/
 	this.insert = function(data){
@@ -150,7 +154,6 @@ function List(){
 				}
 			}
 		}
-		idsExists.push(identificacion)
 
 		return (nuevo)
 	}
@@ -225,14 +228,12 @@ function List(){
 
 			/* Verificar que el id no exista*/
 			if (data.attr == 'id'){
-				if (exists(data.value)) {return ({err : {msg:'La Identificacion : ' + data.value + ' ya esta registrada.'}})}
+				if (exists(data.newValue)) {return ({err : {msg:'La Identificacion : ' + data.newValue + ' ya esta registrada.'}})}
 			}
 
 			/* Actualizar le valor del nodo en el attributo indicado*/
 			element[data.attr] = data.newValue
 
-			/*Agregar id al Array de ids existentes*/
-			if (data.attr == 'id') idsExists.push(parseInt(data.value))
 		}
 
 		/* Retornar los elementos editados y la lista completa*/
@@ -256,18 +257,22 @@ function List(){
 				console.warn(element)
 				if (element == primero){
 					/*Reasigna las referencia de los nodos*/
-					console.info("yes primary")
-					idsExists = idsExists.filter(e => {return (parseInt(e) != parseInt(element.id))})
-					primero.ant = null
-					primero = primero.sig
+					if(primero.sig){
+						primero = primero.sig
+						primero.ant = null
+					}else{
+						primero = null
+					}
 				}else{
 					console.info("no primary")
 					/*Borrar el id del nodo del Array de ids existentes*/
-					idsExists = idsExists.filter(e => {return (parseInt(e) != parseInt(element.id))})
-
 					/*Reasigna las referencia de los nodos*/
-					element.sig.ant = element.ant
-					element.ant.sig = element.sig
+					if(element.sig){
+						element.sig.ant = element.ant
+						element.ant.sig = element.sig
+					}else{
+						element.ant.sig = null
+					}
 				}
 			}else{
 				primero = null
