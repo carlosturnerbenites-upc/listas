@@ -1,5 +1,5 @@
 /* Definicion de la clase Nodo - nodo*/
-function Node(data){
+function CustomNode(data){
 	this.id = data.info.identificacion
 	this.nomb = data.info.nombre
 	this.apelli = data.info.apellido

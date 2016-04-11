@@ -56,6 +56,8 @@ function List(){
 			return count
 		}
 
+		this.ids = function() {return idsExists}
+
 	/* Insertar nodos*/
 	this.insert = function(data){
 		var point =  data.point,
@@ -65,21 +67,21 @@ function List(){
 		data.info.sig = null
 		data.info.ant = null
 
+		if (exists(identificacion)) return ({err :{msg:'La Identificacion : ' + identificacion + 'ya esta registrada.'}})
 		if(empty()){
-			nuevo = new Node(data)
+			nuevo = new CustomNode(data)
 			primero = nuevo
 		}else{
-			if (exists(identificacion)) return ({err :{msg:'La Identificacion : ' + identificacion + 'ya esta registrada.'}})
 			if(point == 'head'){
 				data.info.sig = Object.assign({},primero)
-				nuevo = new Node(data)
+				nuevo = new CustomNode(data)
 				nuevo.sig.ant = nuevo
 				primero = nuevo
 			}else if (point == 'fail'){
 				var aux = primero
 				while (aux != null){
 					if(aux.sig == null){
-						nuevo = new Node(data)
+						nuevo = new CustomNode(data)
 						aux.sig = nuevo
 						nuevo.ant = aux
 						break
@@ -99,7 +101,7 @@ function List(){
 					var aux = primero
 					while (aux != null){
 						if(aux.sig == null){
-							nuevo = new Node(data)
+							nuevo = new CustomNode(data)
 							aux.sig = nuevo
 							nuevo.ant = aux
 							break
@@ -111,7 +113,7 @@ function List(){
 					var elements = result.elements
 					elements.sort((a,b) => {return(a.name > b.name)})
 					var element = elements[0]
-					nuevo = new Node(data)
+					nuevo = new CustomNode(data)
 					console.log(elements)
 					if (element == primero) {
 						nuevo.sig = primero
@@ -124,8 +126,6 @@ function List(){
 						element.ant = nuevo
 					}
 				}
-
-
 			}else if(typeof point == 'number'){
 				var aux = primero,
 					count = 1
@@ -133,7 +133,7 @@ function List(){
 				if(point < 1 || point > counterElements()) return ({err: {msg :'La posicion : ' + point + ' no es valida.'}})
 				while (aux != null){
 					if(count == point){
-						nuevo = new Node(data)
+						nuevo = new CustomNode(data)
 						if (aux == primero) {
 							nuevo.sig = primero
 							primero.ant = nuevo
@@ -252,18 +252,25 @@ function List(){
 
 		/* Recorre los nodos encontrado*/
 		for (var element of elements){
+			if(primero instanceof CustomNode){
+				console.warn(element)
+				if (element == primero){
+					/*Reasigna las referencia de los nodos*/
+					console.info("yes primary")
+					idsExists = idsExists.filter(e => {return (parseInt(e) != parseInt(element.id))})
+					primero.ant = null
+					primero = primero.sig
+				}else{
+					console.info("no primary")
+					/*Borrar el id del nodo del Array de ids existentes*/
+					idsExists = idsExists.filter(e => {return (parseInt(e) != parseInt(element.id))})
 
-			if (element == primero){
-				/*Reasigna las referencia de los nodos*/
-				primero = primero.sig
-				primero.ant = null
+					/*Reasigna las referencia de los nodos*/
+					element.sig.ant = element.ant
+					element.ant.sig = element.sig
+				}
 			}else{
-				/*Borrar el id del nodo del Array de ids existentes*/
-				idsExists = idsExists.filter(e => {return (e != element.id)})
-
-				/*Reasigna las referencia de los nodos*/
-				element.sig.ant = element.ant
-				element.ant.sig = element.sig
+				primero = null
 			}
 		}
 		/* Retornar los elementos borrados y la lista completa*/
