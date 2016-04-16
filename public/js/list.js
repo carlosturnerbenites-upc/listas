@@ -160,7 +160,18 @@ function List(){
 
 	/* Mostrar la lista*/
 	/* Retorna el primero nodo de la lista*/
-	this.showList = function() {console.info(primero);return primero}
+	this.showList = function(direction) {
+		if(direction){return primero}
+		else{
+			var aux = primero
+			while(aux != null){
+				if(aux.sig == null){
+					return aux
+				}
+				aux = aux.sig
+			}
+		}
+	}
 
 	/* Buscar nodos*/
 	this.find = function(data){

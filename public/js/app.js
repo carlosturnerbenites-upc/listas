@@ -63,16 +63,27 @@ function managerList(){
 
 	/* Mostrar la lista*/
 	this.showList = function(){
+		var directionUser = prompt('Escriba la direccion \n1 : Ascendente \n2 : Desendente')
+		var direction = directionUser == 1 ? 1 : 0
 		/* Enviar peticion al servidor*/
-		var headList = list.showList()
+		var listNode = list.showList(direction)
+		if(!listNode) return alert("Lista Vacia")
+		var node = listNode
+		
+		if(direction){
+			while(node != null){
+				renderResult(node)
+				node = node.sig
+			}
+		}else{
+			while(node != null){
+				renderResult(node)
+				node = node.ant
+			}
 
-		if(!headList) return alert("Lista Vacia")
-
-		var head = headList
-		while(head != null){
-			renderResult(head)
-			head = head.sig
 		}
+
+
 	}
 
 	/* Buscar nodos*/
