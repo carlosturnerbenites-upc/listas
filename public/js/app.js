@@ -69,7 +69,7 @@ function managerList(){
 		var listNode = list.showList(direction)
 		if(!listNode) return alert("Lista Vacia")
 		var node = listNode
-		
+
 		if(direction){
 			while(node != null){
 				renderResult(node)
