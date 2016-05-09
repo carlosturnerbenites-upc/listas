@@ -58,6 +58,7 @@ function managerList(){
 				}
 			})
 		if(result.err) return alert(result.err.msg)
+		console.log(result)
 		renderResult(result)
 	}
 
@@ -71,15 +72,15 @@ function managerList(){
 		var node = listNode
 
 		if(direction){
-			while(node != null){
+			do{
 				renderResult(node)
 				node = node.sig
-			}
+			}while(node != listNode)
 		}else{
-			while(node != null){
+			do{
 				renderResult(node)
 				node = node.ant
-			}
+			}while(node != listNode)
 
 		}
 

@@ -4,6 +4,7 @@ function List(){
 
 	/*variables globales*/
 	var primero = null,
+		ultimo = null,
 		aux = null,
 
 		/* Verificacion de Lista vacio*/
@@ -16,13 +17,13 @@ function List(){
 		exists = function(dato){
 			var exists = false,
 				aux = primero
-			while (aux != null){
+			do{
 				if(aux.id == dato){
 					exists = true
 					break
 				}
 				aux = aux.sig
-			}
+			}while (aux != primero)
 			console.log("exists " + exists)
 			return exists
 		},
@@ -55,10 +56,10 @@ function List(){
 		counterElements = function(){
 			aux = primero
 			var count = 0
-			while (aux != null){
+			do{
 				count += 1
 				aux = aux.sig
-			}
+			}while (aux != primero)
 			return count
 		}
 
@@ -71,27 +72,40 @@ function List(){
 		data.info.sig = null
 		data.info.ant = null
 
-		if (exists(identificacion)) return ({err :{msg:'La Identificacion : ' + identificacion + 'ya esta registrada.'}})
 		if(empty()){
 			nuevo = new CustomNode(data)
 			primero = nuevo
+			ultimo = primero
+
+			primero.sig = ultimo
+			primero.ant = ultimo
 		}else{
+			if (exists(identificacion)) return ({err :{msg:'La Identificacion : ' + identificacion + 'ya esta registrada.'}})
 			if(point == 'head'){
-				data.info.sig = Object.assign({},primero)
 				nuevo = new CustomNode(data)
-				nuevo.sig.ant = nuevo
+
+				nuevo.sig = primero
+				nuevo.ant = primero.ant
+
+				primero.ant = nuevo
+				//primero.sig = ultimo
+
 				primero = nuevo
+				ultimo = primero.ant
 			}else if (point == 'fail'){
 				var aux = primero
-				while (aux != null){
-					if(aux.sig == null){
+				do{
+					if(aux.sig == primero){
 						nuevo = new CustomNode(data)
 						aux.sig = nuevo
 						nuevo.ant = aux
+						nuevo.sig = primero
+						ultimo = nuevo
+						primero.ant = ultimo
 						break
 					}
 					aux = aux.sig
-				}
+				}while (aux != primero)
 			}else if(point == 'abc'){
 				/* Buscar los nodos con la informacion recibida*/
 				var result = this.find({
@@ -113,7 +127,6 @@ function List(){
 						aux = aux.sig
 					}
 				}else{
-
 					var elements = result.elements
 					elements.sort((a,b) => {return(a.name > b.name)})
 					var element = elements[0]
@@ -161,15 +174,17 @@ function List(){
 	/* Mostrar la lista*/
 	/* Retorna el primero nodo de la lista*/
 	this.showList = function(direction) {
+		console.log(primero)
 		if(direction){return primero}
 		else{
 			var aux = primero
-			while(aux != null){
-				if(aux.sig == null){
+			do{
+				if(aux.sig == primero){
+					console.log(aux)
 					return aux
 				}
 				aux = aux.sig
-			}
+			}while(aux != primero)
 		}
 	}
 
@@ -193,7 +208,7 @@ function List(){
 			var elements = [],
 				operator = getOperator(data.operator)
 
-			while (aux != null){
+			do{
 				/* Definir la condicion a ejecutar para la busqueda - tipo String*/
 				var stringCode = 'aux[data.attr]' + operator + 'data.value'
 
@@ -211,7 +226,7 @@ function List(){
 				/* Reasignacion de nodos auxiliares */
 
 				aux = aux.sig
-			}
+			}while (aux != primero)
 			if(found){
 				/*Si se encontraron nodos, los retorna*/
 				return ({elements :elements})
@@ -265,7 +280,6 @@ function List(){
 		/* Recorre los nodos encontrado*/
 		for (var element of elements){
 			if(primero instanceof CustomNode){
-				console.warn(element)
 				if (element == primero){
 					/*Reasigna las referencia de los nodos*/
 					if(primero.sig){
@@ -275,7 +289,6 @@ function List(){
 						primero = null
 					}
 				}else{
-					console.info("no primary")
 					/*Borrar el id del nodo del Array de ids existentes*/
 					/*Reasigna las referencia de los nodos*/
 					if(element.sig){
