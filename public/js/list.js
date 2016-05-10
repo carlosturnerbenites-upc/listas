@@ -117,27 +117,22 @@ function List(){
 
 				/* Preguntar si no hubieron resultados - Retornar mensaje*/
 				if (result.notFound){
-					var aux = primero
-					while (aux != null){
-						if(aux.sig == null){
-							nuevo = new CustomNode(data)
-							aux.sig = nuevo
-							nuevo.ant = aux
-							break
-						}
-						aux = aux.sig
-					}
+					data.point = 'fail'
+					return this.insert(data)
 				}else{
 					var elements = result.elements
 					elements.sort((a,b) => {return(a.name > b.name)})
 					var element = elements[0]
 					nuevo = new CustomNode(data)
-					console.log(elements)
-					if (element == primero) {
-						nuevo.sig = primero
-						primero.ant = nuevo
-						primero = nuevo
+
+					if (element == primero){
+						data.point = 'head'
+						return this.insert(data)
 					}else{
+						if (element == ultimo) {
+							ultimo = nuevo
+							primero.ant = ultimo
+						}
 						element.ant.sig = nuevo
 						nuevo.ant = element.ant
 						nuevo.sig = element
@@ -153,11 +148,15 @@ function List(){
 					if(count == point){
 						nuevo = new CustomNode(data)
 						if (aux == primero) {
-							nuevo.sig = primero
-							primero.ant = nuevo
-							primero = nuevo
+							data.point = 'head'
+							return this.insert(data)
 						}else{
+							if (aux == ultimo) {
+								ultimo = nuevo
+								primero.ant = ultimo
+							}
 							nuevo.sig = aux.sig
+							nuevo.ant = aux
 							aux.sig =  nuevo
 						}
 						break
@@ -285,7 +284,7 @@ function List(){
 					/*Reasigna las referencia de los nodos*/
 					if(primero.sig){
 						primero = primero.sig
-						primero.ant = null
+						primero.ant = ultimo
 					}else{
 						primero = null
 					}
