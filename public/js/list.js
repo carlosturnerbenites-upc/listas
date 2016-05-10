@@ -92,6 +92,7 @@ function List(){
 
 				primero = nuevo
 				ultimo = primero.ant
+				ultimo.sig = nuevo
 			}else if (point == 'fail'){
 				var aux = primero
 				do{
