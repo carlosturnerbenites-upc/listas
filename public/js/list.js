@@ -282,25 +282,25 @@ function List(){
 			if(primero instanceof CustomNode){
 				if (element == primero){
 					/*Reasigna las referencia de los nodos*/
-					if(primero.sig){
+					if(primero.sig != primero){
 						primero = primero.sig
 						primero.ant = ultimo
-					}else{
-						primero = null
-					}
+
+						ultimo.sig = primero
+					}else{primero = null}
 				}else{
 					/*Borrar el id del nodo del Array de ids existentes*/
 					/*Reasigna las referencia de los nodos*/
-					if(element.sig){
+					if (element == ultimo){
+						ultimo = element.ant
+						ultimo.sig = primero
+						primero.ant = ultimo
+					}else{
 						element.sig.ant = element.ant
 						element.ant.sig = element.sig
-					}else{
-						element.ant.sig = null
 					}
 				}
-			}else{
-				primero = null
-			}
+			}else{primero = null}
 		}
 		/* Retornar los elementos borrados y la lista completa*/
 		return ({elements: elements})
